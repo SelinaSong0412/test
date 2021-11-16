@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library("sas7bdat")
 myData = read.sas7bdat("/Users/selina/Desktop/BIOS\ 650/Homework/3/completedata.sas7bdat")
 head(myData)
+#
 ```
 
 ## Problem 1 
