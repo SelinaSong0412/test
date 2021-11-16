@@ -1,0 +1,169 @@
+---
+title: "BIOSTAT650 HW7"
+author: "Yao Song"
+date: "12/11/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library("sas7bdat")
+myData = read.sas7bdat("/Users/selina/Desktop/BIOS\ 650/Homework/3/completedata.sas7bdat")
+head(myData)
+```
+
+## Problem 1 
+
+## (a)
+Fit a model using fatalism as the outcome (Y) and predictors: age (continuous, linear), sex, and race/ethnicity, number of comorbidities (comorbidity1, continuous, linear) and education.
+```{r}
+variables <- c("Fatalism", "Age", "Sex", "R_E", "Comorbidity1", "Education")
+newData = myData[, variables]
+fit_1 = lm(Fatalism ~ Age + Sex + R_E + Comorbidity1 + Education, data = newData)
+summary(fit_1)
+```
+
+
+Obtain all residuals:
+
+(1). residuals
+
+```{r}
+# Method 1: directly oobtain 
+fit_1.res = fit_1$residuals  
+summary(fit_1.res)
+
+# Method 2: ei = Fatalism - fit_1.yhat
+fit_1.yhat = fit_1$fitted.values
+fit_1.res2 = newData$Fatalism - fit_1.yhat
+# check equvalence
+all(round(fit_1.res, 6) == round(fit_1.res2, 6))
+```
+
+(2). standardized residuals 
+
+```{r}
+# From regression output, MSE = sigma^2hat = 5.171
+n = nrow(newData)
+p = fit_1$rank
+fit_1.sigma = sqrt(sum(fit_1.res^2)/(n-p))
+fit_1.zi = fit_1.res/fit_1.sigma  # standardized residuals
+```
+```{r}
+summary(fit_1.zi) # Saw approximately a Normal(0,1) distribution
+```
+
+(3). studentized residuals
+
+```{r}
+fit_1.ri = rstandard(fit_1)    # internally studentized residuals
+summary(fit_1.ri)
+```
+
+(4). externally studentized residuals
+
+```{r}
+fit_1.r_i = rstudent(fit_1)    # externally studentized residuals 
+summary(fit_1.r_i)
+```
+
+
+## (b)
+Visualize the differences among various forms of standardizing residuals.
+
+(1). Create a plot of the difference between studentized and standardized residuals (y-axis) vs. the standardized residuals. Make the size of the dots on the plot depend on the leverage value for the observation. 
+```{r}
+fit_1.hii = hatvalues(fit_1) # leverage hii
+
+y = fit_1.ri - fit_1.zi
+x = Standardized = fit_1.zi
+
+data.frame(y, x, id = 1:nrow(newData))
+plot(x, y,
+     ylab = "Difference between Studentized and Standardized Residuals", 
+     xlab = "Standardized Residuals",
+     pch = 21, col = 25, bty = "o", cex = fit_1.hii*80)
+
+text(x[which(y == max(y))], y[which(y == max(y))],
+     labels = id[which(y == max(y))],
+     cex = 1, pos = 4, col = "red")
+```
+Discuss which observations fall further from 0 (i.e., which observations have the largest differences in the calculated residuals) in terms of hii, and why you could expect that to be the case.\\
+
+
+
+???
+
+
+
+(2). Create a plot of the difference between externally studentized residuals and studentized (y-axis) vs. the studentized residuals. Make the size of the dots on the plot depend on the square of the regular residual for the observation (i.e. $\epsilon_{i}^2$). 
+
+```{r}
+data.frame(Diff_Studentized_Standardized = fit_1.r_i - fit_1.ri, Standardized = fit_1.ri)
+plot(fit_1.ri, fit_1.r_i - fit_1.ri, 
+     ylab = "Difference between Externally Studentized and Studentized Residuals", 
+     xlab = "Studentized Residuals",
+     pch = 21, col = 25, bty = "o", cex = (fit_1.res^2)/80)
+```
+Discuss which observations have the largest differences in the two residuals in terms of $\epsilon_{i}^2$ difference between externally studentized residuals and studentized:\\
+
+
+```{r}
+
+```
+
+```{r}
+
+```
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+```{r}
+
+```
+
+
